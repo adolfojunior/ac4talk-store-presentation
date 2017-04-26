@@ -1,0 +1,548 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Spring Boot Talk</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/league.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <style type="text/css">
+    .left { text-align: left; }
+    .right { text-align: right; }
+    .spring-boot-logo {
+      height: 150px;
+      background: url(images/unmounting.png);
+      background-size: 150px 75px;
+      background-repeat: no-repeat;
+      background-position: center center;
+    }
+    .reveal pre code {
+        max-height: 500px;
+    }
+    section mark {
+      color: black;
+      background-color: white;
+    }
+    </style>
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+
+		<div class="reveal">
+			<div class="slides">
+
+        <!-- Presentation -->
+        <section>
+          <section>
+            <div class="spring-boot-logo"></div>
+            <p>Unmounting a Spring Boot Application</p>
+            <p>
+              <small>
+                <div>
+                  Adolfo Junior
+                </div>
+                <div>
+                  &lt;ajunior@avenuecode.com&gt; / &lt;adolfojunior@gmail.com&gt;
+                </div>
+                <div>
+                  <a href="https://github.com/adolfojunior" target="_blank">https://github.com/adolfojunior</a>
+                </div>
+              </small>
+            </p>
+          </section>
+          <section>
+            <ul>
+              <li>Micro+service</li>
+              <li>Spring-Boot</li>
+              <li>Consul + HAProxy</li>
+            </ul>
+          </section>
+        </section>
+
+        <!-- arch -->
+        <section>
+          <section>
+            <h3>How to design a good application?</h3>
+          </section>
+          <section>
+            <h3>let's think!</h3>
+            <ul>
+              <li class="fragment fade-in">how many users should it support?</li>
+              <li class="fragment fade-in">expected throughput? (requests/second)</li>
+              <li class="fragment fade-in">what happens if it needs to expand?</li>
+              <li class="fragment fade-in">what happens if it collapse?</li>
+              <li class="fragment fade-in">what about the incremental evolution?</li>
+            </ul>
+          </section>
+          <section>
+            <h3>MVC? again?</h3>
+            <img src="images/MVC.jpg" width="500px"/>
+            <h3 class="fragment fade-in">Just put it in a cluster!</h3>
+          </section>
+          <section>
+            <p>
+              ... and after a few years of development ...
+            </p>
+            <p class="fragment fade-in">
+              voilà!
+            </p>
+            <p class="fragment fade-in">
+              <img src="images/babeltower.jpg" width="600px"/>
+            </p>
+          </section>
+        </section>
+
+        <!-- microservice -->
+        <section>
+          <section>
+            <h2>Let's talk about Microservice</h2>
+          </section>
+          <section>
+            <img src="images/onedoesnot1.jpg" border="none"/>
+          </section>
+          <section>
+            <h2>
+              What heck is a Microservice?
+            </h2>
+            <blockquote cite="http://samnewman.io/">
+              “Small Autonomous services that work together, modelled around a business domain”
+            </blockquote>
+            <p class="right">Sam Newman</p>
+          </section>
+          <section>
+            <ul>
+              <li>
+                Autonomous<br/>
+                <small>- afford itself to run without others</small>
+              </li>
+              <li class="fragment fade-in">
+                Scalable<br/>
+                <small>- easily replicable</small>
+              </li>
+              <li class="fragment fade-in">
+                Configurable<br/>
+                <small>- dynamically adjustable</small>
+              </li>
+              <li class="fragment fade-in">
+                Resilient<br/>
+                <small>- recoverable fixing itself</small>
+              </li>
+            </ul>
+          </section>
+          <section>
+            <p>
+              Where did you already saw this before???
+            </p>
+          </section>
+          <section>
+            <img src="images/terminator-2.jpg" width="600px"/>
+          </section>
+        </section>
+
+        <!-- spting boot -->
+        <section>
+          <section>
+            <h3>
+              Finally... Spring Boot
+            </h3>
+            <p class="fragment fade-in">
+              <img src="images/fry-1.jpg"/>
+            </p>
+          </section>
+          <section>
+            <p>Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can "just run". We take an opinionated view of the Spring platform and third-party libraries so you can get started with minimum fuss. Most Spring Boot applications need very little Spring configuration.</p>
+          </section>
+          <section>
+            <ol>
+              <li>A self executable <mark>JAR</mark> <span class="fragment fade-in">with dependencies...</span></li>
+              <li class="fragment fade-in">that bootstrap an <mark>ApplicationContext</mark>...</li>
+              <li class="fragment fade-in">load and bind <mark>configuration</mark> to Beans...</li>
+              <li class="fragment fade-in">auto configure <mark>modules with conditional Beans</mark> <span class="fragment fade-in">present in the classpath...</span></li>
+              <li class="fragment fade-in">and manage the application <mark>lifecycle</mark>.</li>
+            </ol>
+          </section>
+
+          <section>
+            <h3>SPRING INITIALIZR</h3>
+            <p>
+              Let's create a new project!
+            </p>
+            <p>
+              <a href="https://start.spring.io" target="_blank">
+              https://start.spring.io
+              </a>
+            </p>
+          </section>
+          <section data-background-color="black">
+            <h3>command line</h3>
+            <pre><code class="shell" data-trim data-noescape>
+            mkdir ac4talk-web-sample && cd ac4talk-web-sample && \
+            curl -s https://start.spring.io/starter.zip \
+              -d type=gradle-project \
+              -d bootVersion=1.5.3.RELEASE \
+              -d groupId=com.avenuecode.talk.spring.boot \
+              -d <mark>style=web</mark> \
+              -d <mark>style=jersey</mark> \
+              -d <mark>style=actuator</mark> \
+              -H 'accept-encoding:gzip' | tar -xzvf -
+            </code></pre>
+          </section>
+          <section>
+            <h3>Running through Gradle</h3>
+            <pre><code class="shell" data-trim data-noescape>
+            ./gradlew clean build bootRun
+            </code></pre>
+            <h3>Running the jar</h3>
+            <pre><code class="shell" data-trim data-noescape>
+            java -jar build/libs/*.jar --management.security.enabled=false
+            </code></pre>
+          </section>
+          <section data-background-color="black">
+            <h3>gradle</h3>
+            <pre><code class="groovy" data-trim data-noescape>
+            buildscript {
+              ext { springBootVersion = "1.5.3.RELEASE" }
+              repositories { mavenCentral() }
+              dependencies { classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") }
+            }
+            apply plugin: "java"
+            apply plugin: "eclipse"
+            apply plugin: "org.springframework.boot"
+
+            version = "0.0.1-SNAPSHOT"
+            sourceCompatibility = 1.8
+
+            repositories { mavenCentral() }
+            dependencies {
+              compile("org.springframework.boot:spring-boot-starter")
+              testCompile("org.springframework.boot:spring-boot-starter-test")
+            }
+            </code></pre>
+            <code class="text" data-trim data-noescape>./gradlew bootRun</code>
+          </section>
+        </section>
+
+        <!-- 1. self executable jar -->
+        <section>
+          <section>
+            <p>1. self executable jar</p>
+            <pre><code class="java" data-trim data-noescape>
+            @SpringBootApplication
+            public class DemoApplication {
+
+              public static void main(String[] args) {
+                SpringApplication.run(DemoApplication.class, args);
+              }
+
+              @Bean
+              public ApplicationRunner applicationRunner() {
+                return (arguments) -> {
+                  System.out.println("42");
+                };
+              }
+            }
+            </code></pre>
+          </section>
+          <section>
+            <p>Application Server Architecture</p>
+            <p>
+              <img src="images/appserver.png" height="500px"/>
+            </p>
+          </section>
+          <section>
+            <p>Spring Boot Architecture</p>
+            <p>
+              <img src="images/appsb.png" height="500px"/>
+            </p>
+          </section>
+          <section>
+            <img src="images/misterm.jpg" />
+          </section>
+          <section>
+            <h3>JAR Manifest</h3>
+            <pre><code class="text" data-trim data-noescape>
+            Manifest-Version: 1.0
+            Start-Class: <mark>com.example.DemoApplication</mark>
+            Spring-Boot-Classes: <mark>BOOT-INF/classes/</mark>
+            Spring-Boot-Lib: <mark>BOOT-INF/lib/</mark>
+            Spring-Boot-Version: 1.5.3.RELEASE
+            Main-Class: <a target="_blank" href="https://github.com/spring-projects/spring-boot/blob/master/spring-boot-tools/spring-boot-loader/src/main/java/org/springframework/boot/loader/JarLauncher.java#L51">org.springframework.boot.loader.JarLauncher</a>
+            </code></pre>
+          </section>
+          <section>
+            <h3>spring dependencies (~6mb)</h3>
+            <pre><code class="config" data-trim data-noescape>
+            # Spring
+            spring-aop          4.3.7.RELEASE.jar
+            spring-beans        4.3.7.RELEASE.jar
+            spring-context      4.3.7.RELEASE.jar
+            spring-core         4.3.7.RELEASE.jar
+            spring-expression   4.3.7.RELEASE.jar
+            # Spring Boot
+            spring-boot                  1.5.3.RELEASE.jar
+            spring-boot-autoconfigure    1.5.3.RELEASE.jar
+            spring-boot-starter          1.5.3.RELEASE.jar
+            spring-boot-starter-logging  1.5.3.RELEASE.jar
+            </code></pre>
+          </section>
+          <section>
+            <img src="images/spring-boot-tree.png" height="500px"/>
+          </section>
+        </section>
+
+        <!-- 2. Bootstrap an ApplicationContext -->
+        <section>
+          <section>
+            <p>2. Bootstrap an ApplicationContext<p>
+            <pre><code class="java" data-trim data-noescape>
+            public ConfigurableApplicationContext run(String... args) {
+              //...
+              ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);
+              ConfigurableEnvironment environment = prepareEnvironment(listeners,applicationArguments);
+              Banner printedBanner = printBanner(environment);
+              context = <mark>createApplicationContext();</mark>
+              analyzers = new FailureAnalyzers(context);
+              prepareContext(context, environment, listeners, applicationArguments, printedBanner);
+              refreshContext(context);
+              afterRefresh(context, applicationArguments);
+              listeners.finished(context, null);
+              if (this.logStartupInfo) {
+                new StartupInfoLogger(this.mainApplicationClass).logStarted(getApplicationLog(), stopWatch);
+              }
+              return context;
+              //...
+            }
+            </code></pre>
+          </section>
+          <section>
+            <img src="images/bootstrap-log.png"/>
+          </section>
+        </section>
+
+        <!-- 3. Auto bind configuration to Beans -->
+        <section>
+          <section>
+            <h3>3. Configuration to Beans</h3>
+            
+            <p>Load configuration to a ConfigurableEnvironment</p>
+
+            <ul>
+              <li>Command line argumets</li>
+              <li>Java System properties `(-Dfoo=bar)`.</li>
+              <li>OS environment variables.</li>
+              <li>Profile-specific or application properties `(application-{profile}.properties and/or YAML)`</li>
+            </ul>
+            
+            <p>
+              See the <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config">documentation</a> for a more detailed list.
+            </p>
+          </section>
+          <section>
+            <p>Sample configuration as YAML</p>
+            <pre><code class="yaml" data-trim data-noescape>
+            spring:
+              application:
+                name: my-sample-application
+              jersey:
+                applicationPath: /api
+                type: SERVLET
+                filter:
+                  ...
+                init:
+                  ...
+            </code></pre>
+          </section>
+          <section>
+            <p><code>ConfigurableEnvironment</code></p>
+            <img src="images/env.png" width="600px"/>
+          </section>
+          <section>
+            Overriding configuration!
+            <pre><code class="java" data-trim data-noescape>
+            @Bean
+            public ApplicationRunner runner(@Value("${foo}") String foo) {
+              return (arguments) -> {
+                System.out.printf("foo: %s %n", foo);
+              };
+            }
+            </code></pre>
+            <pre><code class="shell" data-trim data-noescape>
+            echo "foo: 1" > application.yml &amp;&amp; \
+            SPRING_APPLICATION_JSON='{"foo":2}' \
+            FOO=3 \
+            java -jar -Dfoo=4 \
+            app.jar --foo=5
+            </code></pre>
+          </section>
+          <section>
+            <p>Old style!</p>
+            <pre><code class="java" data-trim data-noescape>
+            public class JerseyProperties {
+              @Value("${spring.jersey.applicationPath}")
+              String applicationPath;
+              @Value("${spring.jersey.type:SERVLET}")
+              Type type;
+              // ?
+              Filter filter = new Filter();
+              // ?
+              Map&lt;String, String&gt; init = new HashMap&lt;String, String&gt;();
+              //...
+            </code></pre>
+          </section>
+          <section>
+            <p>Bind it to structured objects</p>
+            <pre><code class="java" data-trim data-noescape>
+            @ConfigurationProperties("spring.jersey")
+            public class JerseyProperties {
+              @NotNull
+              String applicationPath;
+              Type type = Type.SERVLET;
+              Filter filter = new Filter();
+              Map&lt;String, String&gt; init = new HashMap&lt;String, String&gt;();
+              //...
+            </code></pre>
+          </section>
+        </section>
+
+        <!-- 4. Spring Auto Configuration -->
+        <section>
+          <section>
+            <h3>4. Spring Auto Configuration</h3>
+            <pre><code class="java" data-trim data-noescape>
+            @Inherited
+            @SpringBootConfiguration
+            @EnableAutoConfiguration
+            @ComponentScan(excludeFilters = {
+                @Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
+                @Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class) })
+            public @interface SpringBootApplication {...}
+            </code></pre>
+            <p>Spring will <mark>scan</mark> Beans for you!</p>
+            <p>Everything annotated with <code>@Configuration</code> is also a bean!</p>
+          </section>
+          <section>
+            <p>Spring-Boot already have a lot of configurations for a bunch of libraries.</p>
+            <img src="images/autoconfigure.png" height="400px"/>
+          </section>
+          <section>
+            <p><code>@Conditions*</code></p>
+            <img src="images/conditions.png" height="400px"/>
+          </section>
+          <section>
+            <p>Simple Spring @Configurations with @Conditional*</p>
+            <pre><code class="java" data-trim data-noescape>
+            @Configuration
+            @ConditionalOnClass(DiscoveryClient.class)
+            @EnableDiscoveryClient
+            public class ConsulAutoConfiguration {}
+            </code></pre>
+          </section>
+          <section>
+            <p>Auto detect configuration on classpath...</p>
+            <p>META-INF/spring.factories</p>
+            <pre><code class="properties" data-trim data-noescape>
+            org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+            com.ac4talk.core.service.resource.ResourceAutoConfiguration,\
+            com.ac4talk.core.service.model.ModelConverterAutoConfiguration,\
+            com.ac4talk.core.service.cloud.ConsulAutoConfiguration
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Let's play with it</h2>
+            <p>
+              <a href="https://github.com/adolfojunior/ac4talk-store">ac4talk-store</a>
+            </p>
+          </section>
+          <section>
+            <img src="images/consul.png"/>
+            <p>
+              <ul>
+                <li>
+                Service Discovery
+                </li>
+                <li>
+                Health Checking
+                </li>
+                <li>
+                KV Store
+                </li>
+                <li>
+                Multi Datacenter
+                </li>
+              </ul>
+            </p>
+          </section>
+          <section>
+            <img src="images/haproxy.png"/>
+            <p>
+              HAProxy is a free, very fast and reliable solution offering high availability, load balancing, and proxying for TCP and HTTP-based applications.
+            </p>
+          </section>
+          <section>
+            <img src="images/dockers.png" height="400px"/>
+          </section>
+          <section>
+            <pre><code class="shell" data-trim data-noescape>
+            git clone https://github.com/adolfojunior/ac4talk-store.git
+            cd ac4talk-store
+            # consul
+            docker-compose up -d consul
+            # haproxy
+            docker-compose up -d haproxy
+            # services
+            docker-compose up -d promotion product cart
+            </code></pre>
+          </section>
+
+          <section>
+            <p>Questions?</p>
+            <img src="images/dog.jpg"/>
+          </section>
+          <section>
+            <p>Thank you!</p>
+          </section>
+        </section>
+
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				history: true,
+        slideNumber: true,
+        backgroundTransition: 'zoom',
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', 
+					  async: true,
+					  callback: function() { hljs.initHighlightingOnLoad(); }
+					}
+				]
+			});
+		</script>
+	</body>
+</html>
